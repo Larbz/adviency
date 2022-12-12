@@ -96,7 +96,7 @@ export function GiftList() {
     <div className={styles.container}>
       <div className={styles.box}>
         <h2 className={styles.title}>Regalos:</h2>
-        <button onClick={()=>show()}>SHOW DIALOG</button>
+        <button onClick={()=>show()} className={styles.addGifts}>AGREGAR REGALOS!</button>
         <div className={styles.gifts}>
           {gifts.length === 0 ? (
             <p className={styles.noGifts}>AUN NO HAY REGALOS!</p>
@@ -106,8 +106,9 @@ export function GiftList() {
                 <div key={`giftBox ${index}`} className={styles.giftBox}>
                   <img src={gift.img_url} alt="imagen" className={styles.img__gift} />
                   <p key={index} className={styles.gift}>
-                    {gift.name}  <b>({gift.quantity})</b>
+                    {gift.name}  
                   </p>
+                    <b>({gift.quantity})</b>
                   <button
                     key={`button ${index}`}
                     onClick={() => deleteGift(index)}
@@ -130,6 +131,7 @@ export function GiftList() {
       </div>
       <dialog className={styles.modal__dialog} ref={modal}>
       <div className={styles.inputs}>
+          <h3 className={styles.modal__title}>AGREGAR UN NUEVO REGALO</h3>
           <input
             type="text"
             name="regalo"
@@ -148,7 +150,7 @@ export function GiftList() {
             disabled={!giftQuantity|giftQuantity<0}
           />
         </div>
-        <button onClick={()=>show()}>CLOSE DIALOG</button>
+        <button onClick={()=>show()} className={styles.close__dialog}>Volver</button>
       </dialog>
       
       
