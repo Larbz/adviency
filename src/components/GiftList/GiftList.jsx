@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./GiftList.module.css";
+import edit from "./../../assets/edit.svg"
 export function GiftList() {
+  
   const [gifts, setGifts] = useState([
     {
       name: "",
@@ -15,6 +17,8 @@ export function GiftList() {
   const [giftUrl, setGiftUrl] = useState();
   const [giftTo, setGiftTo] = useState();
   const [modalVisibility, setModalVisibility] = useState(false);
+  const [edit,setEdit]=useState(false)
+  const [indexToEdit,setIndexToEdit]=useState()
   const modal = useRef(null);
   const addGifts = (name, quantity, img_url, giftTo) => {
     const defaultUrl =
@@ -76,6 +80,12 @@ export function GiftList() {
   const handleGiftTo = (event) => {
     setGiftTo(event.target.value);
   };
+  const resetFields=()=>{
+    setGiftName("");
+    setGiftQuantity(1);
+    setGiftUrl("");
+    setGiftTo("");
+  }
   const verifyUrl = (url) => {
     if (
       url.endsWith("png") ||
@@ -93,6 +103,23 @@ export function GiftList() {
     localStorage.setItem("gifts", JSON.stringify([...newGifts]));
     setGifts((prevArray) => [...prevArray.filter((_, pos) => pos !== index)]);
   };
+  const startEdit=(index)=>{
+    const newGifts=[...gifts]
+    setIndexToEdit(index)
+    setGiftName(newGifts[index].name);
+    setGiftQuantity(newGifts[index].quantity);
+    setGiftUrl(newGifts[index].img_url);
+    setGiftTo(newGifts[index].giftTo);
+  }
+  const editGift=(index,name, quantity, img_url, giftTo)=>{
+    const newGifts=[...gifts]
+    newGifts[index]={name,quantity,img_url,giftTo}
+    localStorage.removeItem("gifts")
+    localStorage.setItem("gifts", JSON.stringify([...newGifts]));
+    setGifts((prevArray) => [...newGifts]);
+    resetFields()
+    show()
+  }
   const deleteAll = () => {
     setGifts((prevArray) => []);
     localStorage.removeItem("gifts");
@@ -136,13 +163,23 @@ export function GiftList() {
                     <p className={styles.gift__destinatary}>{gift.giftTo}</p>
                   </div>
                   <b>({gift.quantity})</b>
-                  <button
-                    key={`button ${index}`}
-                    onClick={() => deleteGift(index)}
-                    className={styles.delete__button}
-                  >
-                    X
-                  </button>
+                  <div className={styles.gift__buttons}>
+
+                    <button className={styles.edit__button} onClick={()=>{
+                                                                          show()
+                                                                          setEdit(true)
+                                                                          startEdit(index)}}>
+                      <div  alt="" className={styles.edit__button__img} />
+                    </button>
+                    <button
+                      key={`button ${index}`}
+                      onClick={() => deleteGift(index)}
+                      className={styles.delete__button}
+                    >
+                      <div className={styles.delete__button__img}/>
+                      
+                    </button>
+                  </div>
                 </div>
               );
             })
@@ -191,6 +228,15 @@ export function GiftList() {
             className={styles.input__gift__to}
             placeholder="Ingresa al destinatario del regalo"
           />
+          {edit?
+          <input
+            type="submit"
+            value="EDIT"
+            onClick={() => editGift(indexToEdit,giftName, giftQuantity, giftUrl, giftTo)}
+            className={styles.submit}
+            disabled={!giftQuantity | (giftQuantity < 0)}
+          />:
+          
           <input
             type="submit"
             value="ADD"
@@ -198,8 +244,11 @@ export function GiftList() {
             className={styles.submit}
             disabled={!giftQuantity | (giftQuantity < 0)}
           />
+          }
         </div>
-        <button onClick={() => show()} className={styles.close__dialog}>
+        <button onClick={() => {show()
+                                setEdit(false)
+                                resetFields()}} className={styles.close__dialog}>
           Volver
         </button>
       </dialog>

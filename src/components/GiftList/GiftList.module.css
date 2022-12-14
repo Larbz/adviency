@@ -5,8 +5,8 @@
   justify-content: center;
 }
 .box {
-  min-width: 22rem;
-  max-width: 25rem;
+  min-width: 25rem;
+  max-width: 28rem;
   background-color: #eaeaea;
   padding: 1.5rem;
   display: flex;
@@ -17,13 +17,11 @@
 .title {
   font-size: 1.875em;
 }
-.gift__info{
+.gift__info {
   margin-left: 1.5rem;
-
 }
-.gift__destinatary{
+.gift__destinatary {
   font-size: 0.8em;
-  
 }
 .gift {
   font-size: 1em;
@@ -48,7 +46,8 @@
   position: relative;
   /* gap: 2rem; */
 }
-.noGifts,.addGifts {
+.noGifts,
+.addGifts {
   font-size: 1em;
   padding: 0.4rem 0.8rem;
   text-align: center;
@@ -56,9 +55,8 @@
   border: none;
   color: white;
   border-radius: 0.4rem;
-  
 }
-.addGifts{
+.addGifts {
   font-family: inherit;
   cursor: pointer;
   background-color: #5c99bb;
@@ -67,24 +65,26 @@
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
-  
 }
 .inputs > input {
   height: 2.2rem;
   border-radius: 4px;
   border: 1px solid rgb(156, 150, 150);
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
   font-size: 1em;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .delete__button {
-  padding: 0.2rem 0.4rem;
-  height: 30px;
-  width: 30px;
-  position: absolute;
-  right: 0;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+}
+.edit__button {
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 .delete__all {
   margin: 1rem auto;
@@ -116,13 +116,13 @@
   border-radius: 1.5rem;
   border: none;
 }
-.modal__dialog::backdrop{
-    background-color: rgba(200, 200, 200, 0.3)
+.modal__dialog::backdrop {
+  background-color: rgba(200, 200, 200, 0.3);
 }
-.modal__title{
+.modal__title {
   text-align: center;
 }
-.close__dialog{
+.close__dialog {
   margin: 0.8rem auto;
   display: flex;
   background-color: #dc1439;
@@ -133,4 +133,25 @@
   align-items: center;
   height: 2.2rem;
   font-size: 1em;
+}
+.edit__button__img {
+  width: 1.875rem;
+  height: 1.875rem;
+  background-image: url("./../../assets/edit.svg");
+  background-repeat: no-repeat;
+  border: none;
+}
+.gift__buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  position: absolute;
+  right: 0;
+}
+.delete__button__img {
+  width: 1.875rem;
+  height: 1.875rem;
+  background-image: url("./../../assets/cancel.svg");
+  background-repeat: no-repeat;
+  border: none;
 }
