@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./GiftList.module.css";
-import edit from "./../../assets/edit.svg"
 export function GiftList() {
   
   const [gifts, setGifts] = useState([
