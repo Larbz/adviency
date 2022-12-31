@@ -1,0 +1,45 @@
+
+.modal__dialog {
+    position: fixed;
+    width: 24rem;
+    padding: 1rem 2rem;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    border-radius: 1.5rem;
+    border: none;
+
+  }
+  .modal__dialog::backdrop {
+    background-color: rgba(200, 200, 200, 0.3);
+  }
+  .modal__title {
+    text-align: center;
+  }
+  .close__dialog {
+    margin: 0.8rem auto;
+    display: flex;
+    background-color: #dc1439;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.4rem;
+    align-items: center;
+    height: 2.2rem;
+    font-size: 1em;
+  }
+  .inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  .inputs > input {
+    height: 2.2rem;
+    border-radius: 4px;
+    border: 1px solid rgb(156, 150, 150);
+    font-family: "Open Sans", sans-serif;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }

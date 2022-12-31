@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import GiftBox from "../GiftBox/GiftBox";
+import Modal from "../Modal/Modal";
 import styles from "./GiftList.module.css";
 export function GiftList() {
-  
   const [gifts, setGifts] = useState([
     {
       name: "",
@@ -16,13 +17,20 @@ export function GiftList() {
   const [giftUrl, setGiftUrl] = useState();
   const [giftTo, setGiftTo] = useState();
   const [modalVisibility, setModalVisibility] = useState(false);
-  const [edit,setEdit]=useState(false)
-  const [indexToEdit,setIndexToEdit]=useState()
-  const modal = useRef(null);
+  const [edit, setEdit] = useState(false);
+  const [indexToEdit, setIndexToEdit] = useState();
+  const [indexToFocus,setIndexToFocus]=useState(0);
+  const [keyPressed,setKeyPressed]=useState(false);
+  // const modal = useRef(null);
+  const addbox=useRef(null);
+  const deleteAllBox=useRef(null);
+  const giftsContainer=useRef(null);
+  const accessButtons=useRef([]);
+
   const addGifts = (name, quantity, img_url, giftTo) => {
     const defaultUrl =
       "https://images.emojiterra.com/google/noto-emoji/v2.038/share/1f381.jpg";
-    if ((giftName.length > 0) & (giftTo.length > 0)) {
+    if ((name.length > 0) & (giftTo.length > 0)) {
       if (gifts.filter((gift) => gift.name === name).length === 0) {
         if (verifyUrl(img_url)) {
           localStorage.setItem(
@@ -36,11 +44,14 @@ export function GiftList() {
         } else {
           localStorage.setItem(
             "gifts",
-            JSON.stringify([...gifts, { name, quantity, img_url: defaultUrl,giftTo }])
+            JSON.stringify([
+              ...gifts,
+              { name, quantity, img_url: defaultUrl, giftTo },
+            ])
           );
           setGifts((prevArray) => [
             ...prevArray,
-            { name, quantity, img_url: defaultUrl,giftTo },
+            { name, quantity, img_url: defaultUrl, giftTo },
           ]);
         }
         setGiftName("");
@@ -67,24 +78,12 @@ export function GiftList() {
       show();
     }
   };
-  const handleChange = (event) => {
-    setGiftName(event.target.value);
-  };
-  const handleChangeQuantity = (event) => {
-    setGiftQuantity(event.target.valueAsNumber);
-  };
-  const handleChangeUrl = (event) => {
-    setGiftUrl(event.target.value);
-  };
-  const handleGiftTo = (event) => {
-    setGiftTo(event.target.value);
-  };
-  const resetFields=()=>{
+  const resetFields = () => {
     setGiftName("");
     setGiftQuantity(1);
     setGiftUrl("");
     setGiftTo("");
-  }
+  };
   const verifyUrl = (url) => {
     if (
       url.endsWith("png") ||
@@ -102,32 +101,74 @@ export function GiftList() {
     localStorage.setItem("gifts", JSON.stringify([...newGifts]));
     setGifts((prevArray) => [...prevArray.filter((_, pos) => pos !== index)]);
   };
-  const startEdit=(index)=>{
-    const newGifts=[...gifts]
-    setIndexToEdit(index)
+  const handleEditTrue=()=>{
+    setEdit(prev=>true)
+  }
+  const handleEditFalse=()=>{
+    setEdit(prev=>false)
+  }
+  const startEdit = (index) => {
+    show()
+    const newGifts = [...gifts];
+    setIndexToEdit(index);
+    console.log(indexToEdit)
+    console.log(newGifts[index].name)
+    console.log(newGifts[index].quantity)
+    console.log(newGifts[index].img_url)
+    console.log(newGifts[index].giftTo)
     setGiftName(newGifts[index].name);
     setGiftQuantity(newGifts[index].quantity);
     setGiftUrl(newGifts[index].img_url);
     setGiftTo(newGifts[index].giftTo);
-  }
-  const editGift=(index,name, quantity, img_url, giftTo)=>{
-    const newGifts=[...gifts]
-    newGifts[index]={name,quantity,img_url,giftTo}
-    localStorage.removeItem("gifts")
+  };
+  const editGift = (index, name, quantity, img_url, giftTo) => {
+    
+    const newGifts = [...gifts];
+    newGifts[index] = { name, quantity, img_url, giftTo };
+    localStorage.removeItem("gifts");
     localStorage.setItem("gifts", JSON.stringify([...newGifts]));
     setGifts((prevArray) => [...newGifts]);
-    resetFields()
-    show()
-  }
+    resetFields();
+    show();
+  };
   const deleteAll = () => {
     setGifts((prevArray) => []);
     localStorage.removeItem("gifts");
   };
   const show = () => {
-    if (modalVisibility) modal.current?.close();
-    else modal.current?.showModal();
     setModalVisibility((prev) => !prev);
   };
+  // document.addEventListener("keydown",(e)=>{
+   
+  //   if(!keyPressed){
+  //     // console.log(accessButtons.current)
+  //     setKeyPressed(true)
+  //     if(e.code==='KeyA')
+  //     {
+  //       console.log('just one time')
+  //       addbox.current.focus()
+        
+  //     }
+  //     else if(e.code==='KeyB')
+  //       deleteAllBox.current.focus()
+  //     else if(e.code==='ArrowRight'){
+
+  //       setIndexToFocus(prev=>prev+1)
+  //       accessButtons.current[indexToFocus].focus()
+  //     }
+  //     else if(e.code==='ArrowLeft')
+  //       {
+          
+  //       setIndexToFocus(prev=>prev-1)
+  //       accessButtons.current[indexToFocus].focus()
+  //       }
+  //   }
+  // })
+  // document.addEventListener("keyup",(e)=>{
+  //   console.log('asd')
+    
+  //   setKeyPressed(false);
+  // })
   useEffect(() => {
     setGifts([]);
     const gifts = localStorage.getItem("gifts");
@@ -140,117 +181,30 @@ export function GiftList() {
     <div className={styles.container}>
       <div className={styles.box}>
         <h2 className={styles.title}>Regalos:</h2>
-        <button onClick={() => show()} className={styles.addGifts}>
+        <button ref={addbox} tabIndex="-1" onClick={() => show()} className={styles.addGifts}>
           AGREGAR REGALOS!
         </button>
-        <div className={styles.gifts}>
+        <div className={styles.gifts} ref={giftsContainer}>
           {gifts.length === 0 ? (
             <p className={styles.noGifts}>AUN NO HAY REGALOS!</p>
           ) : (
             gifts.map((gift, index) => {
               return (
-                <div key={`giftBox ${index}`} className={styles.giftBox}>
-                  <img
-                    src={gift.img_url}
-                    alt="imagen"
-                    className={styles.img__gift}
-                  />
-                  <div className={styles.gift__info}>
-                    <p key={index} className={styles.gift}>
-                      {gift.name}
-                    </p>
-                    <p className={styles.gift__destinatary}>{gift.giftTo}</p>
-                  </div>
-                  <b>({gift.quantity})</b>
-                  <div className={styles.gift__buttons}>
-
-                    <button className={styles.edit__button} onClick={()=>{
-                                                                          show()
-                                                                          setEdit(true)
-                                                                          startEdit(index)}}>
-                      <div  alt="" className={styles.edit__button__img} />
-                    </button>
-                    <button
-                      key={`button ${index}`}
-                      onClick={() => deleteGift(index)}
-                      className={styles.delete__button}
-                    >
-                      <div className={styles.delete__button__img}/>
-                      
-                    </button>
-                  </div>
-                </div>
+                <GiftBox key={index} index={index} {...gift} handleEditTrue={handleEditTrue} handleEditFalse={handleEditFalse} deleteGift={deleteGift} startEdit={startEdit}  editGift={editGift}/>
               );
             })
           )}
-          {gifts.length === 0 ? (
+        </div>
+        {gifts.length === 0 ? (
             ""
           ) : (
-            <button className={styles.delete__all} onClick={() => deleteAll()}>
+            <button ref={deleteAllBox} tabIndex="-1" className={styles.delete__all} onClick={() => deleteAll()}>
               BORRAR TODO
             </button>
           )}
-        </div>
       </div>
-      <dialog className={styles.modal__dialog} ref={modal}>
-        <div className={styles.inputs}>
-          <h3 className={styles.modal__title}>AGREGAR UN NUEVO REGALO</h3>
-          <input
-            type="text"
-            name="regalo"
-            placeholder="Introduzca el regalo"
-            value={giftName}
-            onChange={handleChange}
-            className={styles.input__name}
-          />
-          <input
-            type="number"
-            name="cantidad"
-            value={giftQuantity}
-            onChange={handleChangeQuantity}
-            className={styles.input__quantity}
-            placeholder="Cantidad"
-          />
-          <input
-            type="text"
-            name="image__url"
-            value={giftUrl}
-            onChange={handleChangeUrl}
-            className={styles.input__img_url}
-            placeholder="Inserta un url de imagen valido"
-          />
-          <input
-            type="text"
-            name="gift__to"
-            value={giftTo}
-            onChange={handleGiftTo}
-            className={styles.input__gift__to}
-            placeholder="Ingresa al destinatario del regalo"
-          />
-          {edit?
-          <input
-            type="submit"
-            value="EDIT"
-            onClick={() => editGift(indexToEdit,giftName, giftQuantity, giftUrl, giftTo)}
-            className={styles.submit}
-            disabled={!giftQuantity | (giftQuantity < 0)}
-          />:
-          
-          <input
-            type="submit"
-            value="ADD"
-            onClick={() => addGifts(giftName, giftQuantity, giftUrl, giftTo)}
-            className={styles.submit}
-            disabled={!giftQuantity | (giftQuantity < 0)}
-          />
-          }
-        </div>
-        <button onClick={() => {show()
-                                setEdit(false)
-                                resetFields()}} className={styles.close__dialog}>
-          Volver
-        </button>
-      </dialog>
+      {modalVisibility===true?<Modal show={show} addGifts={addGifts} indexToEdit={indexToEdit} edit={edit} {...gifts[indexToEdit]} handleEditFalse={handleEditFalse} handleEditTrue={handleEditTrue} editGift={editGift}/>:''}
+      
     </div>
   );
 }
