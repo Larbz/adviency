@@ -1,6 +1,6 @@
+import GiftBox from "components/GiftBox/GiftBox";
+import Modal from "components/Modal/Modal"
 import { useEffect, useRef, useState } from "react";
-import GiftBox from "../GiftBox/GiftBox";
-import Modal from "../Modal/Modal";
 import styles from "./GiftList.module.css";
 export function GiftList() {
   const [gifts, setGifts] = useState([
@@ -19,13 +19,13 @@ export function GiftList() {
   const [modalVisibility, setModalVisibility] = useState(false);
   const [edit, setEdit] = useState(false);
   const [indexToEdit, setIndexToEdit] = useState();
-  const [indexToFocus,setIndexToFocus]=useState(0);
-  const [keyPressed,setKeyPressed]=useState(false);
+  const [indexToFocus, setIndexToFocus] = useState(0);
+  const [keyPressed, setKeyPressed] = useState(false);
   // const modal = useRef(null);
-  const addbox=useRef(null);
-  const deleteAllBox=useRef(null);
-  const giftsContainer=useRef(null);
-  const accessButtons=useRef([]);
+  const addbox = useRef(null);
+  const deleteAllBox = useRef(null);
+  const giftsContainer = useRef(null);
+  const accessButtons = useRef([]);
 
   const addGifts = (name, quantity, img_url, giftTo) => {
     const defaultUrl =
@@ -101,28 +101,27 @@ export function GiftList() {
     localStorage.setItem("gifts", JSON.stringify([...newGifts]));
     setGifts((prevArray) => [...prevArray.filter((_, pos) => pos !== index)]);
   };
-  const handleEditTrue=()=>{
-    setEdit(prev=>true)
-  }
-  const handleEditFalse=()=>{
-    setEdit(prev=>false)
-  }
+  const handleEditTrue = () => {
+    setEdit((prev) => true);
+  };
+  const handleEditFalse = () => {
+    setEdit((prev) => false);
+  };
   const startEdit = (index) => {
-    show()
+    show();
     const newGifts = [...gifts];
     setIndexToEdit(index);
-    console.log(indexToEdit)
-    console.log(newGifts[index].name)
-    console.log(newGifts[index].quantity)
-    console.log(newGifts[index].img_url)
-    console.log(newGifts[index].giftTo)
+    console.log(indexToEdit);
+    console.log(newGifts[index].name);
+    console.log(newGifts[index].quantity);
+    console.log(newGifts[index].img_url);
+    console.log(newGifts[index].giftTo);
     setGiftName(newGifts[index].name);
     setGiftQuantity(newGifts[index].quantity);
     setGiftUrl(newGifts[index].img_url);
     setGiftTo(newGifts[index].giftTo);
   };
   const editGift = (index, name, quantity, img_url, giftTo) => {
-    
     const newGifts = [...gifts];
     newGifts[index] = { name, quantity, img_url, giftTo };
     localStorage.removeItem("gifts");
@@ -139,7 +138,7 @@ export function GiftList() {
     setModalVisibility((prev) => !prev);
   };
   // document.addEventListener("keydown",(e)=>{
-   
+
   //   if(!keyPressed){
   //     // console.log(accessButtons.current)
   //     setKeyPressed(true)
@@ -147,7 +146,7 @@ export function GiftList() {
   //     {
   //       console.log('just one time')
   //       addbox.current.focus()
-        
+
   //     }
   //     else if(e.code==='KeyB')
   //       deleteAllBox.current.focus()
@@ -158,7 +157,7 @@ export function GiftList() {
   //     }
   //     else if(e.code==='ArrowLeft')
   //       {
-          
+
   //       setIndexToFocus(prev=>prev-1)
   //       accessButtons.current[indexToFocus].focus()
   //       }
@@ -166,7 +165,7 @@ export function GiftList() {
   // })
   // document.addEventListener("keyup",(e)=>{
   //   console.log('asd')
-    
+
   //   setKeyPressed(false);
   // })
   useEffect(() => {
@@ -181,7 +180,12 @@ export function GiftList() {
     <div className={styles.container}>
       <div className={styles.box}>
         <h2 className={styles.title}>Regalos:</h2>
-        <button ref={addbox} tabIndex="-1" onClick={() => show()} className={styles.addGifts}>
+        <button
+          ref={addbox}
+          tabIndex="-1"
+          onClick={() => show()}
+          className={styles.addGifts}
+        >
           AGREGAR REGALOS!
         </button>
         <div className={styles.gifts} ref={giftsContainer}>
@@ -190,21 +194,47 @@ export function GiftList() {
           ) : (
             gifts.map((gift, index) => {
               return (
-                <GiftBox key={index} index={index} {...gift} handleEditTrue={handleEditTrue} handleEditFalse={handleEditFalse} deleteGift={deleteGift} startEdit={startEdit}  editGift={editGift}/>
+                <GiftBox
+                  key={index}
+                  index={index}
+                  {...gift}
+                  handleEditTrue={handleEditTrue}
+                  handleEditFalse={handleEditFalse}
+                  deleteGift={deleteGift}
+                  startEdit={startEdit}
+                  editGift={editGift}
+                />
               );
             })
           )}
         </div>
         {gifts.length === 0 ? (
-            ""
-          ) : (
-            <button ref={deleteAllBox} tabIndex="-1" className={styles.delete__all} onClick={() => deleteAll()}>
-              BORRAR TODO
-            </button>
-          )}
+          ""
+        ) : (
+          <button
+            ref={deleteAllBox}
+            tabIndex="-1"
+            className={styles.delete__all}
+            onClick={() => deleteAll()}
+          >
+            BORRAR TODO
+          </button>
+        )}
       </div>
-      {modalVisibility===true?<Modal show={show} addGifts={addGifts} indexToEdit={indexToEdit} edit={edit} {...gifts[indexToEdit]} handleEditFalse={handleEditFalse} handleEditTrue={handleEditTrue} editGift={editGift}/>:''}
-      
+      {modalVisibility === true ? (
+        <Modal
+          show={show}
+          addGifts={addGifts}
+          indexToEdit={indexToEdit}
+          edit={edit}
+          {...gifts[indexToEdit]}
+          handleEditFalse={handleEditFalse}
+          handleEditTrue={handleEditTrue}
+          editGift={editGift}
+        />
+      ) : (
+        ""
+      )}
     </div>
   );
 }
